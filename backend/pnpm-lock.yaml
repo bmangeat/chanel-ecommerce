@@ -29,6 +29,12 @@ importers:
       '@fastify/swagger-ui':
         specifier: ^5.2.0
         version: 5.2.5
+      '@fastify/type-provider-typebox':
+        specifier: ^6.1.0
+        version: 6.1.0(typebox@1.1.23)
+      '@sinclair/typebox':
+        specifier: ^0.34.49
+        version: 0.34.49
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.3
@@ -47,6 +53,9 @@ importers:
       pino-pretty:
         specifier: ^13.0.0
         version: 13.1.3
+      typebox:
+        specifier: ^1.1.23
+        version: 1.1.23
     devDependencies:
       '@types/bcryptjs':
         specifier: ^2.4.6
@@ -270,12 +279,20 @@ packages:
   '@fastify/swagger@9.7.0':
     resolution: {integrity: sha512-Vp1SC1GC2Hrkd3faFILv86BzUNyFz5N4/xdExqtCgkGASOzn/x+eMe4qXIGq7cdT6wif/P/oa6r1Ruqx19paZA==}
 
+  '@fastify/type-provider-typebox@6.1.0':
+    resolution: {integrity: sha512-k29cOitDRcZhMXVjtRq0+caKxdWoArz7su+dQWGzGWnFG+fSKhevgiZ7nexHWuXOEEQzgJlh6cptIMu69beaTA==}
+    peerDependencies:
+      typebox: ^1.0.13
+
   '@lukeed/ms@2.0.2':
     resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
     engines: {node: '>=8'}
 
   '@pinojs/redact@0.4.0':
     resolution: {integrity: sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==}
+
+  '@sinclair/typebox@0.34.49':
+    resolution: {integrity: sha512-brySQQs7Jtn0joV8Xh9ZV/hZb9Ozb0pmazDIASBkYKCjXrXU3mpcFahmK/z4YDhGkQvP9mWJbVyahdtU5wQA+A==}
 
   '@types/bcryptjs@2.4.6':
     resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
@@ -679,6 +696,9 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  typebox@1.1.23:
+    resolution: {integrity: sha512-LOGT/+DLfGsFzAVoYAYzLWT3iV5LfAHebW1pg336lwZg5fkaL3uBKqNXsA7aGb9rkOsVu9QohSkImHwwfHDC0A==}
+
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
@@ -868,9 +888,15 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fastify/type-provider-typebox@6.1.0(typebox@1.1.23)':
+    dependencies:
+      typebox: 1.1.23
+
   '@lukeed/ms@2.0.2': {}
 
   '@pinojs/redact@0.4.0': {}
+
+  '@sinclair/typebox@0.34.49': {}
 
   '@types/bcryptjs@2.4.6': {}
 
@@ -1296,6 +1322,8 @@ snapshots:
       get-tsconfig: 4.13.7
     optionalDependencies:
       fsevents: 2.3.3
+
+  typebox@1.1.23: {}
 
   typescript@5.9.3: {}
 

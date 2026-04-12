@@ -7,6 +7,8 @@ import jwtPlugin from './plugins/jwt'
 import helmetPlugin from './plugins/helmet'
 import swaggerPlugin from './plugins/swagger'
 import routes from './routes'
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
+
 
 export function buildApp() {
   const fastify = Fastify({
@@ -17,7 +19,7 @@ export function buildApp() {
           ? { target: 'pino-pretty', options: { colorize: true } }
           : undefined,
     },
-  })
+  }).withTypeProvider<TypeBoxTypeProvider>()
 
   // ── Sécurité & transport ──────────────────────────────────────
   fastify.register(helmetPlugin)

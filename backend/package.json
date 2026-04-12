@@ -16,12 +16,15 @@
     "@fastify/rate-limit": "^10.2.0",
     "@fastify/swagger": "^9.4.0",
     "@fastify/swagger-ui": "^5.2.0",
+    "@fastify/type-provider-typebox": "^6.1.0",
+    "@sinclair/typebox": "^0.34.49",
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",
     "pg": "^8.13.1",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.0.0",
+    "typebox": "^1.1.23"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

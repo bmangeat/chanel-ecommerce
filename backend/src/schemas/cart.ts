@@ -1,3 +1,5 @@
+import { Type } from '@sinclair/typebox'
+
 export const getCartSchema = {
   response: {
     200: {
@@ -37,24 +39,28 @@ export const getCartSchema = {
 // EXERCISE 2 — Implémenter ce schéma puis la route POST /cart/items
 // ----------------------------------------------------------------
 export const addToCartSchema = {
-  body: {
-    type: 'object',
-    required: ['product_id', 'quantity'],
-    properties: {
-      product_id: { type: 'string' },
-      quantity: { type: 'integer', minimum: 1, maximum: 10 },
-    },
-    additionalProperties: false,
-  },
+  body: Type.Object({
+    product_id: Type.String(),
+    quantity: Type.Integer({ minimum: 1, maximum: 10 }),
+  }, { additionalProperties: false }),
   response: {
-    201: {
-      type: 'object',
-      properties: {
-        id: { type: 'string' },
-        product_id: { type: 'string' },
-        quantity: { type: 'integer' },
-      },
-    },
+    201: Type.Object({
+      id: Type.String(),
+      product_id: Type.String(),
+      quantity: Type.Integer(),
+    }),
+    404: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    409: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    500: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
   },
 }
 
