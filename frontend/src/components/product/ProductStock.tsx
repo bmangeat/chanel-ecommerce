@@ -1,5 +1,7 @@
 'use client'
 
+import { useProductStock } from "@/lib/hooks/useProduct"
+
 // ----------------------------------------------------------------
 // EXERCISE 1 — Implémenter ce composant
 // ----------------------------------------------------------------
@@ -30,9 +32,26 @@ interface ProductStockProps {
   productId: string
 }
 
-export function ProductStock({ productId: _productId }: ProductStockProps) {
-  // TODO : Implémenter
+export function ProductStock({ productId }: ProductStockProps) {
+  const { data, isLoading, error } = useProductStock(productId)
   return (
-    <div className="h-5 w-32 animate-pulse rounded bg-chanel-gray-light" aria-label="Chargement du stock" />
+    <div aria-live="polite" aria-atomic="true">
+      {isLoading && <div className="h-5 w-32 animate-pulse rounded bg-chanel-gray-light" aria-label="Chargement du stock" />}
+      {!isLoading && (error || !data) && <p>Disponibilité sur demande</p>}
+      {!isLoading && data && <StockDisplay stock={data.stock} isLimitedEdition={data.is_limited_edition} />}
+    </div>
   )
 }
+
+const StockDisplay = ({ stock, isLimitedEdition }: { stock: number, isLimitedEdition: boolean }) => {
+  if (stock === 0) {
+    return <div className="text-red-500">Rupture de stock</div>
+  }
+  if (isLimitedEdition) {
+    return <div className="text-orange-500">Plus que {stock} exemplaire(s)</div>
+  }
+
+if (stock > 5) return <div className="text-green-500">{stock} unités</div>
+return <div className="text-orange-500">{stock} unités</div>
+}
+
