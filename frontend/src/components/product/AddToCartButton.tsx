@@ -27,13 +27,15 @@
 // ----------------------------------------------------------------
 
 import { Button } from '@/components/ui/Button'
+import { useAddToCart } from '@/lib/hooks/useCart'
 
 interface AddToCartButtonProps {
   productId: string
   stock: number
 }
 
-export function AddToCartButton({ productId: _productId, stock }: AddToCartButtonProps) {
+export function AddToCartButton({ productId, stock }: AddToCartButtonProps) {
+  const { mutateAsync: addToCart, isPending, isError, error, isSuccess } = useAddToCart()
   // TODO : Implémenter avec useAddToCart()
 
   if (stock === 0) {
@@ -43,10 +45,40 @@ export function AddToCartButton({ productId: _productId, stock }: AddToCartButto
       </Button>
     )
   }
+   if (isPending) {
+    return (
+      <Button loading variant="primary" disabled className="w-full">
+        Ajout en cours...
+      </Button>
+    )
+  }
+
+
+  if (isError && error.cause === 409) {
+    return (
+      <Button variant="secondary" disabled className="w-full">
+        Rupture de stock
+      </Button>
+    )
+  }
 
   return (
-    <Button variant="primary" className="w-full">
-      Ajouter au panier
-    </Button>
+    <>
+      <PopUpAddToCart isSuccess={isSuccess} />
+      <Button variant="primary" onClick={() => addToCart({ product_id: productId, quantity: 1 })} className="w-full">
+        Ajouter au panier
+      </Button>
+    </>
   )
+}
+
+export function PopUpAddToCart({ isSuccess }: { isSuccess: boolean }) {
+  if (isSuccess) {
+    return (
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-chanel-black px-6 py-3">
+        <span className="text-white">Ajouté au panier</span>
+      </div>
+    )
+  }
+  return null
 }

@@ -191,8 +191,75 @@ const cartRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
   //   4. Mettre à jour cart_items.quantity
   //   5. Retourner l'item mis à jour (code 200)
   // ----------------------------------------------------------------
-  fastify.put('/items/:itemId', { schema: updateCartItemSchema }, async (_request, reply) => {
-    return reply.code(501).send({ error: 'Not Implemented', message: 'Exercise 3 — À implémenter' })
+  fastify.put('/items/:itemId', { schema: updateCartItemSchema }, async (request, reply) => {
+    const cartId = await getOrCreateCart(request.user.sub);
+    const { itemId } = request.params;
+    const { quantity } = request.body;
+
+    const client = await db.connect();
+    try {
+      await client.query('BEGIN');
+      const { rows: item } = await client.query(
+        `SELECT
+        ci.id,
+        ci.product_id,
+        ci.quantity,
+        ci.created_at,
+        ci.updated_at,
+        json_build_object(
+          'id', p.id,
+          'name', p.name,
+          'version', p.version,
+          'is_limited_edition', p.is_limited_edition,
+          'price', p.price::float,
+          'image_url', p.image_url,
+          'stock', p.stock
+        ) AS product
+       FROM cart_items ci
+       JOIN products p ON p.id = ci.product_id
+       WHERE ci.cart_id = $1
+       AND ci.id = $2
+       ORDER BY ci.created_at ASC`,
+        [cartId, itemId]
+      );
+
+      if (item.length === 0) {
+        await client.query('ROLLBACK');
+        return reply.code(404).send({ error: 'Item not found', message: 'Item not found' })
+      }
+
+      const { rows: product } = await client.query(
+        `SELECT stock FROM products WHERE id = $1`,
+        [item[0].product_id]
+      );
+
+      const diff = quantity - item[0].quantity;
+      if (product[0].stock < diff) {
+        await client.query('ROLLBACK');
+        return reply.code(409).send({ error: 'Out of stock', message: 'Stock is insufficient' })
+      }
+
+      const { rows: updatedItem } = await client.query(
+        `UPDATE cart_items SET quantity = $1
+       WHERE cart_id = $2 AND id = $3
+       RETURNING *`,
+        [quantity, cartId, itemId]
+      );
+
+      const ok = await decrementStock(client, item[0].product_id, diff, item[0].product.is_limited_edition, item[0].product.version)
+      if (!ok) {
+        await client.query('ROLLBACK');
+        return reply.code(409).send({ error: 'Conflict', message: 'Product has been updated by another user' })
+      }
+
+      await client.query('COMMIT');
+      return reply.code(200).send(updatedItem[0]);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      return reply.code(500).send({ error: 'Internal Server Error', message: 'Failed to update item in cart' })
+    } finally {
+      client.release();
+    }
   })
 
   // ----------------------------------------------------------------
@@ -204,3 +271,5 @@ const cartRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     return reply.code(501).send({ error: 'Not Implemented', message: 'Exercise 3 — À implémenter' })
   })
 }
+
+export default cartRoutes

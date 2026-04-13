@@ -68,17 +68,29 @@ export const addToCartSchema = {
 // EXERCISE 3 — Schéma pour PUT /cart/items/:itemId
 // ----------------------------------------------------------------
 export const updateCartItemSchema = {
-  params: {
-    type: 'object',
-    required: ['itemId'],
-    properties: { itemId: { type: 'string' } },
-  },
-  body: {
-    type: 'object',
-    required: ['quantity'],
-    properties: {
-      quantity: { type: 'integer', minimum: 1, maximum: 10 },
-    },
-    additionalProperties: false,
+  params: Type.Object({
+    itemId: Type.String(),
+  }),
+  body: Type.Object({
+    quantity: Type.Integer({ minimum: 1, maximum: 10 }),
+  }, { additionalProperties: false }),
+  response: {
+    200: Type.Object({
+      id: Type.String(),
+      product_id: Type.String(),
+      quantity: Type.Integer(),
+    }),
+    404: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    409: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    500: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
   },
 }
