@@ -94,3 +94,28 @@ export const updateCartItemSchema = {
     }),
   },
 }
+
+export const deleteCartItemSchema = {
+  params: Type.Object({
+    itemId: Type.String(),
+  }),
+  response: {
+    200: Type.Object({
+      id: Type.String(),
+      product_id: Type.String(),
+      quantity: Type.Integer(),
+    }),
+    404: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    409: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+    500: Type.Object({
+      error: Type.String(),
+      message: Type.String(),
+    }),
+  },
+}
