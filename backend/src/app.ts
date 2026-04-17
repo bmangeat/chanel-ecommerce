@@ -39,6 +39,10 @@ export function buildApp() {
   //   - Sur les routes /api/auth/* : 10 requêtes / 15 minutes
   // fastify.register(import('@fastify/rate-limit'), { ... })
 
+  fastify.register(import('@fastify/rate-limit'), {
+    max: 200,
+    timeWindow: '1 minute'
+  })
   // ── Routes ────────────────────────────────────────────────────
   fastify.register(routes, { prefix: '/api' })
 

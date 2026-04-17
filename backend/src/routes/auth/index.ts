@@ -13,6 +13,11 @@ const COOKIE_OPTIONS = {
 }
 
 export default async function authRoutes(fastify: FastifyInstance) {
+  await fastify.register(import('@fastify/rate-limit'), {
+    max: 10,
+    timeWindow: '15 minutes',
+  })
+
   // ----------------------------------------------------------------
   // POST /api/auth/register
   // ----------------------------------------------------------------
